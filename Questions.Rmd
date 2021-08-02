@@ -1,0 +1,11 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+#Relationships between user ratings and release years?
+#Relationships between maturity ratings and user ratings?
+#Possible genre connections?
+```
+

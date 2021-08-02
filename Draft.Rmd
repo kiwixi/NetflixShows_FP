@@ -19,5 +19,17 @@ mydata%>%
   group_by(`user rating score`)%>%
   summarize(`release year`)
 #Is there a relationship between the rating of a show and the year of release?
+#Is there a possible relationship of mature ratings to user scores?
+```
+
+
+
+```{r}
+mydata %>%
+  distinct()%>%
+  arrange(-`release year`)
+
+ggplot(data = mydata) +
+  geom_point(aes(x = `release year`, y = `user rating score`, na.rm = TRUE, scale = 0.9))
 ```
 
