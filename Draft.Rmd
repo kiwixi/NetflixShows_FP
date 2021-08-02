@@ -30,6 +30,10 @@ mydata %>%
   arrange(-`release year`)
 
 ggplot(data = mydata) +
-  geom_point(aes(x = `release year`, y = `user rating score`, na.rm = TRUE, scale = 0.9))
+  geom_point(aes(x = `release year`,
+                 y = `user rating score`, na.rm = TRUE))
+```
+```{r}
+
 ```
 
