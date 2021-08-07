@@ -11,55 +11,150 @@ library(tidyverse)
 library(dplyr)
 library(ggplot2)
 library(scales)
+library(lubridate)
 ```
 # DataSet
 
-Import the required Netflix Dataset, which can be found [Here!](https://raw.githubusercontent.com/reisanar/datasets/master/netflixShows.csv)
+Import the required Netflix Data set, which can be found [Here!](https://raw.githubusercontent.com/reisanar/datasets/master/netflixShows.csv)
 ```{r}
 #read the processed Data
-netflixshows  <- read.csv("https://raw.githubusercontent.com/reisanar/datasets/master/netflixShows.csv")
-```
+netflixshows  <- read.csv('netflix_titles.csv')
 
-## Rating Classification
-To simplify the range of user reviews, we've created a classification system.
-```{r}
-#Function to rate each show
+# Delete the description and Show ID Columns
 netflixshows <- netflixshows%>%
-  mutate(Rating_Classification = 
-  ifelse(user.rating.score %in% 95:100,
-        "5 Star",
-  ifelse(user.rating.score %in% 90:94,
-        "4-1/2 Star",
-  ifelse(user.rating.score %in% 85:89,
-         "4 Star",
-  ifelse(user.rating.score %in% 80:84,
-         "3-1/2 Star",
-  ifelse(user.rating.score %in% 75:79,
-         "3 Star",
-  ifelse(user.rating.score %in% 70:74,
-         "2-1/2 Star", 
-  ifelse(user.rating.score %in% 65:69,
-        "2 Star",
-  ifelse(user.rating.score %in% 60:64,
-        "1-1/2 Star",
-  ifelse(user.rating.score %in% 55:59,
-        "1 Star",
-  ifelse(user.rating.score %in% 50:54,
-        "1/2 Stars",
-  ifelse(is.na(user.rating.score),
-        "NA",
-"0 Stars"))))))))))))%>%
-  group_by(rating)
-netflixshows
+  select(-description, -show_id, - cast)
+
 ```
 
 # Data Exploration and Analysis
+## Exploring Single Variable Attributes
+
+To get a better understanding of the data set as a whole, we've dissected certain factors that are crucial in the full understanding. In addition to separating variables, we ran several checks to ensure our data is not misleading, such as Dates being listed in the future or corrupted text.
+
+
+### Content Type:
+
+The visualization below graphically represents the distribution of the content released on Netflix's platform. They can either be labeled as a 'Movie' or a 'TV Show'.
+
+
+```{r}
+#Because countries are sometimes grouped together, separating them is required.
+sep_country_movie <- netflixshows%>%
+  separate_rows(country, sep = ",")%>%
+  group_by(country)%>%
+  #Due to the size of the dataset, we had to filter out countries that had under 100 Movie entries
+  filter(n()> 100 & type == "Movie")%>%
+  summarize(country)
+
+
+```
+
+### Country of Origin:
+ This next visualization graphically demonstrates the distribution of content on Netflix per country. Content is separated by the Type of Content it is, either Movie or TV Show.
+ 
+ 
+ **Netflix Movie Content by Country**
+```{r}
+#Because countries are sometimes grouped together, separating them is required.
+  #Due to the size of the dataset, we had to filter out countries that had under 80 Movie entries.
+netflixshows%>%
+  separate_rows(country, sep = ",")%>%
+  group_by(country)%>%
+  filter(n()> 80 & type == "Movie" & country != "")%>%
+  ggplot()+
+    geom_bar(mapping = aes(
+      y = country,
+      color = country),
+      na.rm = T)+
+        labs(
+          title = "Netflix Movie Content by Country",
+          subtitle = "Includes Countries where count is more than 80",
+          y = "Country Name",
+          x = "Number of Movies"
+        )
+```
+ **Netflix TV Show Content by Country**
+
+```{r}
+netflixshows%>%
+  separate_rows(country, sep = ",")%>%
+  group_by(country)%>%
+  filter(n()> 80 & type == "TV Show" & country != "")%>%
+  ggplot()+
+    geom_bar(mapping = aes(
+      y = country,
+      color = country),
+      na.rm = T)+
+        labs(
+          title = "Netflix TV Show Content by Country",
+          subtitle = "Includes Countries where count is more than 80",
+          y = "Country Name",
+          x = "Number of TV Shows",
+          
+        )
+    
+```
+### Year of Release:
+Netflix has a wide range of films on their platform. Below is a graphical representation of the distributions of content by original release date, separated by both Movies and TV Shows.
+
+**Netflix Movie content by Release Year**
+
+```{r}
+netflixshows%>%
+  group_by(release_year)%>%
+  filter(release_year != "" |  !is.na(release_year))%>%
+  filter(type == "Movie")%>%
+  ggplot()+
+    geom_bar(mapping = aes(
+      x = release_year))+
+      labs(
+          title = "Netflix Movie content by Release Year",
+          x = "Year",
+          y = "Count"
+        )
+```
+
+**Netflix TV Show content by Release Year**
+```{r}
+netflixshows%>%
+  group_by(release_year)%>%
+  filter(release_year != "" |  !is.na(release_year))%>%
+  filter(type == "TV Show")%>%
+  ggplot()+
+    geom_bar(mapping = aes(
+      x = release_year))+
+      labs(
+          title = "Netflix Movie content by Release Year",
+          x = "Year",
+          y = "Count"
+        )
+```
+
+
+### Age Rating:
+Netflix rates all of their shows in a way that suggests appropriate ages see appropriate material. The graph below demonstrates the distribution between  Netflix's content and the associating Age rating.
+
+```{r}
+netflixshows%>%
+  group_by(rating)%>%
+  filter(rating != "" | !is.na(rating))%>%
+  ggplot()+
+  geom_bar(mapping = aes(
+    y = rating,
+    color = rating))+
+    labs(
+        title = "Netflix Content by Age Rating",
+        x = "Count",
+        y = "Age Rating"
+      )
+  
+```
+
 ### Possible questions:
 1. Amount of content as a function of time released
 2. Is there a relationship between the rating of a show and the year of release?
 3. Is there a possible relationship of mature ratings to user scores
 4. Amount of content as a function of rating level
-5. Amount of content as a function of categorized ratings (5 stars, 4 stars, etc.)
 
 
 # Conclusion
@@ -68,18 +163,4 @@ netflixshows
 
 
 
-
-
-```{r}
-netflixshows %>%
-  distinct()%>%
-  arrange(-`release.year`)
-
-ggplot(data = netflixshows) +
-  geom_point(aes(x = `release.year`,
-                 y = `user.rating.score`, na.rm = TRUE))
-```
-```{r}
-
-```
 
