@@ -1,37 +1,83 @@
 ---
-title: "ProjectDraft"
+title: "Exploring and Analyzing Netflix Show User Reviews"
 output: html_notebook
 ---
 
-```{r}
+# Introduction
+Netflix provides its users a plethora of shows to watch, all from different decades and different Genres. But how do these shows 
+# Prerequisites
+```{r Prerequsites}
 library(tidyverse)
-myurl  <- "https://raw.githubusercontent.com/reisanar/datasets/master/netflixShows.csv"
-mydata <- read_csv(myurl)
+library(dplyr)
+library(ggplot2)
+library(scales)
+```
+# DataSet
+
+Import the required Netflix Dataset, which can be found [Here!](https://raw.githubusercontent.com/reisanar/datasets/master/netflixShows.csv)
+```{r}
+#read the processed Data
+netflixshows  <- read.csv("https://raw.githubusercontent.com/reisanar/datasets/master/netflixShows.csv")
 ```
 
+## Rating Classification
+To simplify the range of user reviews, we've created a classification system.
 ```{r}
-mydata %>%
-  arrange(-`user rating score`)
+#Function to rate each show
+netflixshows <- netflixshows%>%
+  mutate(Rating_Classification = 
+  ifelse(user.rating.score %in% 95:100,
+        "5 Star",
+  ifelse(user.rating.score %in% 90:94,
+        "4-1/2 Star",
+  ifelse(user.rating.score %in% 85:89,
+         "4 Star",
+  ifelse(user.rating.score %in% 80:84,
+         "3-1/2 Star",
+  ifelse(user.rating.score %in% 75:79,
+         "3 Star",
+  ifelse(user.rating.score %in% 70:74,
+         "2-1/2 Star", 
+  ifelse(user.rating.score %in% 65:69,
+        "2 Star",
+  ifelse(user.rating.score %in% 60:64,
+        "1-1/2 Star",
+  ifelse(user.rating.score %in% 55:59,
+        "1 Star",
+  ifelse(user.rating.score %in% 50:54,
+        "1/2 Stars",
+  ifelse(is.na(user.rating.score),
+        "NA",
+"0 Stars"))))))))))))%>%
+  group_by(rating)
+netflixshows
 ```
 
+# Data Exploration and Analysis
+### Possible questions:
+1. Amount of content as a function of time released
+2. Is there a relationship between the rating of a show and the year of release?
+3. Is there a possible relationship of mature ratings to user scores
+4. Amount of content as a function of rating level
+5. Amount of content as a function of categorized ratings (5 stars, 4 stars, etc.)
+
+
+# Conclusion
+
+# Citations
+
+
+
+
+
 ```{r}
-mydata%>%
-  group_by(`user rating score`)%>%
-  summarize(`release year`)
-#Is there a relationship between the rating of a show and the year of release?
-#Is there a possible relationship of mature ratings to user scores?
-```
-
-
-
-```{r}
-mydata %>%
+netflixshows %>%
   distinct()%>%
-  arrange(-`release year`)
+  arrange(-`release.year`)
 
-ggplot(data = mydata) +
-  geom_point(aes(x = `release year`,
-                 y = `user rating score`, na.rm = TRUE))
+ggplot(data = netflixshows) +
+  geom_point(aes(x = `release.year`,
+                 y = `user.rating.score`, na.rm = TRUE))
 ```
 ```{r}
 
