@@ -1,8 +1,0 @@
-"0","is_twice_as_long <- function(str1, str2){"
-"0","  diff <- abs(nchar(str1)-nchar(str2))"
-"0","  min_length <- min(nchar(str1),nchar(str2))"
-"0","  diff >= min_length #if difference is more than"
-"0","}"
-"0",""
-"0",""
-"0",""
