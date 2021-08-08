@@ -12,6 +12,7 @@ library(dplyr)
 library(ggplot2)
 library(scales)
 library(lubridate)
+library(dbplyr)
 ```
 # DataSet
 
@@ -36,16 +37,22 @@ To get a better understanding of the data set as a whole, we've dissected certai
 
 The visualization below graphically represents the distribution of the content released on Netflix's platform. They can either be labeled as a 'Movie' or a 'TV Show'.
 
-
+**Netflix Content by Content Type**
 ```{r}
-#Because countries are sometimes grouped together, separating them is required.
-sep_country_movie <- netflixshows%>%
-  separate_rows(country, sep = ",")%>%
-  group_by(country)%>%
-  #Due to the size of the dataset, we had to filter out countries that had under 100 Movie entries
-  filter(n()> 100 & type == "Movie")%>%
-  summarize(country)
-
+netflixshows%>%
+  group_by(type)%>%
+  filter(type != is.na(type))%>%
+  ggplot()+
+  geom_bar(mapping = aes(
+    x = type,
+    fill = type))+
+  labs(
+    title = "Netflix Content by Content Type",
+    x = "Content Type",
+    y = "Count"
+  )
+  
+  
 
 ```
 
@@ -134,6 +141,8 @@ netflixshows%>%
 ### Age Rating:
 Netflix rates all of their shows in a way that suggests appropriate ages see appropriate material. The graph below demonstrates the distribution between  Netflix's content and the associating Age rating.
 
+**Netflix Content by Age Rating**
+
 ```{r}
 netflixshows%>%
   group_by(rating)%>%
@@ -149,6 +158,33 @@ netflixshows%>%
       )
   
 ```
+
+### Genre Type:
+Netflix has a wide arrange of genres to choose from. This is what makes their platform so enjoyable by any age! Below is a graphical representation of the distribution of Netflix Genre Content. As before, they are separated by either Movies or TV Shows.
+
+**Netflix Movie Content by Genre**
+
+```{r}
+netflixshows%>%
+  filter(type == "Movie")%>%
+  separate_rows(listed_in, sep = ", ")%>%
+  group_by(listed_in)%>%
+  summarize(listed_in)%>%
+  count(.)%>%
+  ggplot(mapping = aes(
+    y = n,
+    fill = listed_in))+
+  geom_histogram()
+ 
+
+
+ 
+
+  
+
+ 
+```
+
 
 ### Possible questions:
 1. Amount of content as a function of time released
