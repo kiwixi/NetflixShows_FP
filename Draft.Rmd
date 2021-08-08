@@ -172,13 +172,13 @@ netflixshows%>%
   summarize(listed_in)%>%
   count(.)%>%
   ggplot(mapping = aes(
-    y = n,
-    fill = listed_in))+
-  geom_histogram()
+    fill = n,
+    y = listed_in))+
+  geom_bar()
  
 
 
- 
+ #Still working on this right here. After this, I'm doing director, then by the date added to Netflix, and then cross comparing variables, like Genre per Country, the best director per country, etc..
 
   
 
