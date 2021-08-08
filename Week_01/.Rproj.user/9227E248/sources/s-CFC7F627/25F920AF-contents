@@ -1,0 +1,162 @@
+---
+title: "Basic Operations in R"
+output:
+  html_document:
+    df_print: paged
+---
+
+_Problems adapted from the PSDS textbook_
+
+## Calling built-in functions
+
+Create a variable `my_name` that contains your name
+
+```{r}
+my_name <- "Akilah Dixon"
+```
+
+
+Create a variable `name_length` that holds how many letters (including spaces) are in your name (use the `nchar()` function)
+
+```{r}
+name_length <- nchar (my_name)
+```
+
+
+
+Print the number of letters in your name
+
+```{r}
+paste(name_length)
+```
+
+Create a variable `now_doing` that is your name followed by "is programming!" (use the `paste()` function)
+
+```{r}
+now_doing <- paste(my_name, "is programming")
+```
+
+Make the `now_doing` variable upper case
+
+```{r}
+toupper (now_doing)
+```
+
+
+## Operations with Numbers
+
+Pick two of your favorite numbers (between 1 and 100) and assign them to variables `fav_1` and `fav_2`
+
+```{r}
+fav_1 <- 22
+fav_2 <- 95
+
+```
+
+
+Divide each number by the square root of 201 and save the new value in the original variable
+
+```{r}
+fav_1 <- fav_1/ sqrt (201)
+fav_2 <- fav_2/ sqrt (201)
+
+```
+
+
+Create a variable `raw_sum` that is the sum of the two variables. Use the `sum()` function for practice.
+
+```{r}
+raw_sum <- sum(fav_1,fav_2)
+```
+
+
+Create a variable `round_sum` that is the `raw_sum` rounded to 1 decimal place. Use the `round()` function.
+
+```{r}
+round_sum <- round(raw_sum, 1)
+```
+
+
+Create two new variables `round_1` and `round_2` that are your `fav_1` and `fav_2` variables rounded to 1 decimal places
+
+```{r}
+round_1 <- round(fav_1,1)
+round_2 <- round(fav_2,1)
+```
+
+Create a variable `sum_round` that is the sum of the rounded values
+
+```{r}
+sum_round <- sum(round_1,round_2)
+```
+
+
+Which is bigger, `round_sum` or `sum_round`? (You can use the `max()` function!)
+
+```{r}
+max(sum_round, round_sum)
+```
+
+
+## Functions and Conditionals
+
+Define a function `is_twice_as_long` that takes in two character strings, and returns whether or not (e.g., a boolean) the length of one argument is greater than or equal to twice the length of the other.
+_Hint_: compare the length difference to the length of the smaller string
+
+
+```{r}
+is_twice_as_long <- function(str1, str2){
+  diff <- abs(nchar(str1)-nchar(str2))
+  min_length <- min(nchar(str1),nchar(str2))
+  diff >= min_length #if difference is more than
+}
+
+
+
+```
+
+Call your `is_twice_as_long` function by passing it different length strings to confirm that it works. Make sure to check when _either_ argument is twice
+as long, as well as when neither are!
+
+```{r}
+is_twice_as_long("Hello","hi")
+
+```
+
+Define a function `describe_difference` that takes in two strings. The function should return one of the following sentences as appropriate 
+
+- "Your first string is longer by N characters"
+
+- "Your second string is longer by N characters"
+
+- "Your strings are the same length!"
+
+```{r}
+describe_difference <- function(first,second){
+  diff <- nchar(first) - nchar(second)
+  if(diff > 0){
+    sentence <- paste("Your first string is longer by", diff, "characters")
+  }else if(diff < 0){
+    sentence <- paste("Your second string is longer by", -diff, "characters")
+  }else{
+    sentence <- paste("your strings are the same length!")
+  }
+  sentence
+}
+  
+
+
+
+```
+
+
+
+Call your `describe_difference` function by passing it different length strings to confirm that it works. Make sure to check all 3 conditions
+
+```{r}
+describe_difference("Hello", "Hi")
+describe_difference("Hi", "Hello")
+describe_difference("Hi", "Hi")
+```
+
+

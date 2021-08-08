@@ -1,0 +1,16 @@
+---
+title: "Project Draft"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+myurl  <- "https://raw.githubusercontent.com/reisanar/datasets/master/netflixShows.csv"
+mydata <- read_csv(myurl)
+```
+
+```{r}
+mydata %>%
+  arrange(-`user rating score`)
+```
+

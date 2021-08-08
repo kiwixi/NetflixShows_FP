@@ -1,0 +1,325 @@
+---
+title : "Introduction to `dplyr`"
+output: html_notebook
+---
+
+
+> Companion notebook for the [Introduction to `dplyr` slides](https://www.reisanar.com/slides/introducing-dplyr#1) 
+
+# Motivation
+
+
+- Often you will need to create some *new variables* or *summaries*, or maybe you just want to *rename *the variables or *reorder* the observations to make the data a little easier to work with.
+
+- We will focus on how to use the `dplyr` package, another core member of the `tidyverse`. 
+
+**Prerequisites:** Install the `nycflights13` and `tidyverse` packages
+
+
+```{r, message=FALSE,echo=TRUE}
+library(tidyverse)
+library(nycflights13)
+```
+
+
+# Data from `nycflights13` 
+
+
+This dataset contains flights departing New York City (NYC) in 2013. It contains all 336,776 flights that departed from NYC in 2013. 
+
+```{r, echo = F}
+knitr::include_graphics("https://raw.githubusercontent.com/reisanar/figs/master/flights13.png")
+```
+
+
+The data comes from the [US Bureau of Transportation Statistics](https://www.transtats.bts.gov/DatabaseInfo.asp?DB_ID=120&Link=0), and is documented in `?flights`
+
+
+```{r}
+flights
+```
+
+
+# The `tidyverse`
+
+
+The `tidyverse` is an opinionated [collection of R packages](https://www.tidyverse.org/packages/) designed for data science. All packages share an underlying design philosophy, grammar, and data structures.
+
+
+Definition of **tidy data**: (see [paper]((https://vita.had.co.nz/papers/tidy-data.pdf) by Hadley Wickham)
+
+- Each variable is a column
+
+- Each observation is a row
+
+- Each type of observational unit is a table
+
+
+# Core `tidyverse` packages
+
+
+| Package Name                                |  Usage                 |
+|---------------------------------------------|------------------------|
+| [`ggplot2`](https://ggplot2.tidyverse.org/) | data visualization     |
+| [`dplyr`](https://dplyr.tidyverse.org/)     | data manipulation      |
+| [`tidyr`](https://tidyr.tidyverse.org/)     | tidy up data           |
+| [`readr`](https://readr.tidyverse.org/)     | data import            |
+| [`purrr`](https://purrr.tidyverse.org/)     | functional programming |
+| [`tibble`](https://tibble.tidyverse.org/)   | dataframes reimagined  |
+| [`stringr`](https://stringr.tidyverse.org/) | working with strings   |
+| [`forcats`](https://forcats.tidyverse.org/)|  working with factors   |
+
+
+
+```{r, out.width = "100%", fig.align='center', echo = F}
+knitr::include_graphics("https://raw.githubusercontent.com/reisanar/figs/master/tidyverse-packages.png")
+```
+
+
+
+
+# `dplyr` basics
+
+
+```{r, echo = F, fig.show='hold', out.height="25%", fig.align='center'}
+knitr::include_graphics(
+  c("https://raw.githubusercontent.com/reisanar/figs/master/dplyr-new-old.png")
+)
+```
+
+
+1. **Pick observations** by their values: `filter()`
+
+2. **Reorder** the rows: `arrange()`
+
+3. **Pick variables** by their names: `select()`
+
+4. **Create new variables** with functions of existing variables: `mutate()`
+
+5. **Collapse** many values down to a single summary: `summarize()`
+
+6. Operate on a **group-by-group** basis: `group_by()`
+
+
+
+
+# Filtering _rows_
+
+
+`filter()` allows you to subset observations based on their values.  For example, we can select all flights on January 1st with:
+
+
+
+```{r}
+filter(flights, month == 1, day == 1)
+```
+
+
+
+
+# Comparisons
+
+`dplyr` functions never modify their inputs, so if you want to save the result, you will need to use the assignment operator, `<-`
+
+```{r}
+
+```
+
+
+
+To use filtering effectively, you have to know how to select the observations that you want using comparison operators: 
+
+`>`, `>=`, `<`, `<=`, 
+
+`!=` (not equal), and 
+
+`==` (equal).
+
+
+**Logical operators**
+
+```{r, out.width = "600px", fig.align='center', echo = F}
+knitr::include_graphics("http://r4ds.had.co.nz/diagrams/transform-logical.png")
+```
+]
+
+
+# Flights in November _OR_ December
+
+The following code finds all flights that departed in November OR December:
+
+```{r}
+filter(flights, month == 11| month == 12)
+```
+
+```{r}
+filter(flights, dest %in% c("TPA","MCO"))
+```
+
+
+A useful short-hand is `x %in% y`. This will select every row where `x` is one of the values in `y`. We could use it to rewrite the code above:
+
+```{r}
+nov_dec <- filter(flights, month %in% c(11,12))
+```
+
+
+
+# Arrange rows with `arrange()`
+
+`arrange()` works similarly to `filter()` except that instead of selecting rows, it **changes their order**. 
+
+It takes a data frame and a set of column names to order by. 
+
+```{r}
+
+```
+
+
+Use `desc()` to re-order by a column in descending order:
+
+```{r}
+
+```
+
+# Select columns with `select()`
+
+
+`select()` allows you to rapidly zoom in on a useful subset using the names of the **variables**.
+
+
+
+```{r, echo=TRUE, eval=FALSE}
+# Select columns by name
+
+```
+
+
+There are a number of helper functions you can use within `select()`:
+
+`starts_with("abc")`: matches names that begin with `"abc"`.
+
+`ends_with("xyz")`: matches names that end with `"xyz"`.
+
+`contains("ijk")`: matches names that contain `"ijk"`.
+
+
+
+# Add new variables with `mutate()`
+
+
+To _add new columns_ that are functions of existing columns. That is the job of `mutate()`. `mutate()` always adds new columns at the end of your dataset. 
+
+
+```{r}
+# create a smaller dataset with less columns
+
+```
+
+
+
+# Example: using `mutate()`
+
+
+
+```{r}
+
+```
+
+Note that you can refer to columns that you have just created:
+
+
+```{r}
+
+```
+
+
+
+# Grouped summaries with `summarise()`
+
+`summarise()` _collapses_ a data frame to a single row:
+
+```{r}
+
+```
+
+
+The `summarise()` function is useful when we pair it with `group_by()`.
+
+This way, the analysis can be done for individual groups. 
+
+
+
+# The pipe operator
+
+
+The pipe operator is given by **`%>%`** (from the `magrittr` [package](https://magrittr.tidyverse.org/reference/pipe.html))
+
+
+The pipe sends the output of the LHS function to the first argument of the RHS function.
+For example: 
+```{r}
+# pipe example
+sum(1:8) %>%
+  sqrt() %>% 
+  log()
+```
+
+
+
+is equivalent to 
+
+```{r}
+# the log of the square root
+# of the sum of the elements 
+# of the vector [1 ... 8]
+log(sqrt(sum(1:8)))
+```
+
+
+# Example for data exploration
+
+Imagine that we want to explore the relationship between the distance and average delay for each location. 
+
+
+
+There are three steps to prepare this data:
+
+1. **Group** flights by destination.
+
+2. **Summarize** to compute distance, average delay, and number of flights.
+
+3. **Filter** to remove noisy points and Honolulu airport, which is almost twice as far away as the next closest airport.
+
+
+
+
+# Power of the pipe `%>%` operator 
+
+
+```{r}
+# create dataframe of "delays"
+
+```
+
+If you use RStudio, you can type the pipe with Ctrl + Shift + M if you have a PC or Cmd + Shift + M if you have a Mac.
+
+You can read it as a series of imperative statements: **group**, then **summarize**, then **filter**. A good way to pronounce `%>%` when reading code is "then".
+
+The `n()` function is implemented specifically for each data source and can be used from within `summarize()`, `mutate()` and `filter()`. It returns the number of observations in the current group.
+
+
+
+# Transformations
+
+
+**Why `na.rm = TRUE` ?** Aggregation functions obey the usual rule of missing values: if there is any missing value in the input, the output will be a missing value! 
+
+
+```{r}
+
+```
+
+
+
+
