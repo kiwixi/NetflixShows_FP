@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 title: "Project Draft"
 output: html_notebook
@@ -14,3 +15,21 @@ mydata %>%
   arrange(-`user rating score`)
 ```
 
+=======
+---
+title: "Project Draft"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+myurl  <- "https://raw.githubusercontent.com/reisanar/datasets/master/netflixShows.csv"
+mydata <- read_csv(myurl)
+```
+
+```{r}
+mydata %>%
+  arrange(-`user rating score`)
+```
+
+>>>>>>> a05a8768178b7db2e22fdbcad386db771cae7e68
